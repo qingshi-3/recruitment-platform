@@ -1,0 +1,97 @@
+### 工程结构划分
+package:                com.company.业务.模块
+
+--  application         粗粒度业务的入口，不包含复杂的业务规则，对下层进行协调，对业务逻辑进行编排
+----  command           业务的增、删、改
+------  cmd             请求参数对象
+------  impl            command实现
+----  query             业务的查询
+------  converter       domain object 转换成 dto
+------  dto             暴露给前端的数据对象
+------  impl            query实现
+------  qry             请求参数对象
+
+
+--   domain             业务领域核心
+----  aggregate         聚合根
+----  entity            实体
+----  valueobject       值对象
+----  factory           领域对象的创建工厂
+----  service           领域服务 不属于任何领域对象的行为
+----  repository        资源库
+----  event             领域事件
+------  listener        领域事件监听
+------  publisher       领域事件发布
+------  eventobject     领域事件模型
+----  acl               anti corruption layer 防腐层，外部系统依赖
+----  extenpoint
+
+
+--   infrastructure     基础设施，提供底层的纯技术实现服务
+----  db                数据库
+------ repository       repository 实现
+------  dataobject      数据对象（po）
+------  converter       对象转换 （数据模型、领域模型）
+------  mapper          mybatis（dao）
+----  cache             缓存
+------ repository       repository 实现
+------  dataobject      数据对象
+------  converter       对象转换 （数据模型、领域模型）
+------  redis          redis
+----  rpc               dubbo、thrift、http、、、
+------ repository       repository 实现
+------  dataobject      数据对象（dto）
+------  converter       对象转换 （数据模型、领域模型）
+----  mq                消息
+------ producer         生产者
+------ consumer         消费者
+----  event             事件
+------  publisher        事件发布者
+------  listener         事件监听
+
+
+--  common              公共依赖的 constant、properties  （各maven module 也可以有自己的common）
+----  constants         常量
+----  properties        基于配置的常量（迁配置中心后可动态刷新）
+----  util              工具类
+----  enums             枚举
+----  dto               数据模型  ？？？
+
+
+--  parent              treasurebase内部版本管理，以及依赖ea的父pom，repository等
+
+
+--  api                 外部使用的sdk，如访问我们的spi服务  ？？ api、client、sdk
+----  dto               数据对象
+----  util              工具类
+----  service           服务调用
+
+
+--  spi-app             对外提供服务的应用
+----  rest              http 服务
+----  rpc               dubbo、thrift 等服务
+----  mq                消息监听
+----  ws                web service 服务
+
+
+--  task-app            任务作业调度的应用
+----  job
+----
+
+
+--  web-app             为前端UI提供服务的应用 （请求参数、响应数据取决于 application）
+----  controller
+----  validate
+----  filter
+
+
+
+
+--  adapter             请求、响应（同步）接口适配服务（接口、模型转换、鉴权、加签等）
+--  callback            回调（异步）接口服务 （重试、幂等、回调记录等）
+adapter、callback 合并？？？
+
+ea-tools
+--  ea-framework        基类、日志、异常、响应对象、分页、多语、时区、租户、加解密等
+--  ea-redis            缓存
+--  ea-swagger          接口文档

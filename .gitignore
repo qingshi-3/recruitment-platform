@@ -1,0 +1,6 @@
+# Project exclude paths
+/common/target/
+/domain/target/
+/facade/target/
+/infrastructure/target/
+/start/target/
